@@ -31,5 +31,5 @@ for cnt in range(N, -1, -1): # 답변은 N부터 0까지 내림차순이니까
     spaces = '____' * cnt
     conversation += (spaces + answer) # 언더바 내림차순 개수에 답변 합해서 대화에 추가
 
-print(conversation) # 전체 대화 출력
+print(conversation) # 전체 대화 출력!
         
