@@ -6,6 +6,7 @@
     카운트를 결과에 추가
 결과 리스트 길이로 단지갯수 출력 하고,
 오름차순으로 sort하여 출력ㅇㅇ
+에드 다시
 '''
 N = int(input())
 matrix = [list(map(int, input())) for _ in range(N)]
