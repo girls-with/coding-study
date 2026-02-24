@@ -1,4 +1,4 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;

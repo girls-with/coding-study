@@ -1,4 +1,4 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * 메모리 사용량 : 128516 kb
  * 실행 시간: 596 ms
- * 
+ *
  * [문풀] : 1번 과목부터 N번 과목까지 차례대로 최소 몇 학기에 이수하는지 출력
  * 선수과목이 있어 해당되는 모든 과목을 먼저 이수해야만 해당 과목을 이수.
  *

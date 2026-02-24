@@ -1,4 +1,4 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class BOJ_2667 {
         if (visited[i][j]) continue;
         if (map[i][j] == 1) {
           cnt++; // !! 단지 수 카운트 !!
-    	    // int tempcnt = getHomesCnt(i, j); // !! dfs 풀이 !!
+          // int tempcnt = getHomesCnt(i, j); // !! dfs 풀이 !!
 
           int tempCnt = 1; // 한 단지 내 집의 수
 
@@ -110,22 +110,22 @@ public class BOJ_2667 {
 
   // !! dfs 풀이 !!
   private static int getHomesCnt(int r, int c) { // 현재 위치의 좌표
-	  // visited에 방문 결과 갱신
-	  visited[r][c] = true;
-	  int cnt = 1; // 자기자신
-	  
-	  // 1. 상하좌우 움직이며 인접한 칸을 탐색
-	  for(int i = 0; i < 4; i++) {
-		  int nextr = r + mr[i];
-		  int nextc = c + mc[i];
-		  
-		  // 다음 좌표가 접근 가능한 칸이 아니라면 다음 인접 칸 탐색
-		  	// 범위 밖의 좌표, 좌표의 값이 0이면, 방문했다면
-		  if(isNotInRange(nextr, nextc) || map[nextr][nextc] == 0 || visited[nextr][nextc]) continue;
-		  
-		  cnt += getHomesCnt(nextr, nextc);
-	  }
-	  
-	  return cnt;
+    // visited에 방문 결과 갱신
+    visited[r][c] = true;
+    int cnt = 1; // 자기자신
+
+    // 1. 상하좌우 움직이며 인접한 칸을 탐색
+    for(int i = 0; i < 4; i++) {
+      int nextr = r + mr[i];
+      int nextc = c + mc[i];
+
+      // 다음 좌표가 접근 가능한 칸이 아니라면 다음 인접 칸 탐색
+      // 범위 밖의 좌표, 좌표의 값이 0이면, 방문했다면
+      if(isNotInRange(nextr, nextc) || map[nextr][nextc] == 0 || visited[nextr][nextc]) continue;
+
+      cnt += getHomesCnt(nextr, nextc);
+    }
+
+    return cnt;
   }
 }
