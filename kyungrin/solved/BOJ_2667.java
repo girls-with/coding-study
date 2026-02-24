@@ -1,4 +1,4 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +9,8 @@ import java.util.Comparator;
 import java.util.Queue;
 
 /**
- * 메모리 사용량: 14128 kb 실행 시간:  104 ms
+ * bfs| 메모리 사용량: 14128 kb 실행 시간: 104 ms
+ * dfs| 메모리 사용량: 14364 kb 실행 시간: 104 ms
  * <p>
  * [문풀] : (1) 연결된 집을 묶어 하나의 단지로 정의 (2) 단지 개수 - 단지내 집의 수를 오름차순 출력 정사각형 모양의 지도 (5≤N≤25) 1은 집이 있는 곳을,
  * 0은 집이 없는 곳
@@ -63,6 +64,7 @@ public class BOJ_2667 {
         if (visited[i][j]) continue;
         if (map[i][j] == 1) {
           cnt++; // !! 단지 수 카운트 !!
+          // int tempcnt = getHomesCnt(i, j); // !! dfs 풀이 !!
 
           int tempCnt = 1; // 한 단지 내 집의 수
 
@@ -106,4 +108,24 @@ public class BOJ_2667 {
     return r < 0 || r >= N || c < 0 || c >= N ? true : false;
   }
 
+  // !! dfs 풀이 !!
+  private static int getHomesCnt(int r, int c) { // 현재 위치의 좌표
+    // visited에 방문 결과 갱신
+    visited[r][c] = true;
+    int cnt = 1; // 자기자신
+
+    // 1. 상하좌우 움직이며 인접한 칸을 탐색
+    for(int i = 0; i < 4; i++) {
+      int nextr = r + mr[i];
+      int nextc = c + mc[i];
+
+      // 다음 좌표가 접근 가능한 칸이 아니라면 다음 인접 칸 탐색
+      // 범위 밖의 좌표, 좌표의 값이 0이면, 방문했다면
+      if(isNotInRange(nextr, nextc) || map[nextr][nextc] == 0 || visited[nextr][nextc]) continue;
+
+      cnt += getHomesCnt(nextr, nextc);
+    }
+
+    return cnt;
+  }
 }
