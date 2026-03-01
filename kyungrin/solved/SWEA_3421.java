@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
+ * 메모리 사용량: 27,264kb
+ * 실행 시간: 120ms
+ *
  * [문풀] : 만들 수 있는 버거의 종류 가짓수
  * 사용할 수 있는 재료(1~N 가지)로 햄버거 만들기 (1 ≤ N ≤ 20)
  * - 같은 종류의 재료들을 사용한다면 두 버거는 같은 종류의 버거
@@ -19,7 +22,7 @@ import java.util.StringTokenizer;
  * [근거]  : "재료의 개수와 상관없이" 모든 재료의 "조합"을 구한다.
  * 재료 집합의 요소를 포함한 집합을 만드는 것이기 때문에 부분집합에 부합한다.
  *
- * BAD 궁합을 ArrayList 요소를 가진 배열에 저장한다.
+ * BAD 궁합 -> 2차원 배열로 저장. e.g. 1-2의 조합이 bad 조합이면 bad[1][2] = true이다.
  * 부분 집합을 구하며, 선택하려는 재료에 대해 선택할 수 있는지 확인한다.
  * "이 재료를 선택하려고 하는데, 혹시 이전에 bad한 궁합을 선택하였느냐?"
  *
@@ -29,7 +32,7 @@ import java.util.StringTokenizer;
  * **/
 public class SWEA_3421 {
   static int N, M; // 재료의 개수, 나쁜 궁합의 입력 개수
-  static ArrayList<Integer>[] bad; // 나쁜 궁합. 재료는 idx로 표현된다.
+  static boolean[][] bad; // 나쁜 궁합. 재료는 idx로 표현된다.
   //
   static boolean[] isSelected; // 재료가 선택되었는지 아닌지의 여부를 확인
   //
@@ -45,16 +48,13 @@ public class SWEA_3421 {
       N = Integer.parseInt(st.nextToken());
       M = Integer.parseInt(st.nextToken());
 
-      bad = new ArrayList[N+1]; // 1-based
-      for(int i  = 1; i < N+1; i++){
-        bad[i] = new ArrayList<>();
-      }
+      bad = new boolean[N+1][N+1]; // 1-based
       for(int i = 0; i < M; i++){
         st = new StringTokenizer(br.readLine());
         int v1 = Integer.parseInt(st.nextToken());
         int v2 = Integer.parseInt(st.nextToken());
-        bad[v1].add(v2);
-        bad[v2].add(v1);
+        bad[v1][v2] = true;
+        bad[v2][v1] = true;
       }
 
       isSelected = new boolean[N+1]; // 1-based
@@ -80,29 +80,21 @@ public class SWEA_3421 {
     }
 
     // 1. 재료 선택 y/n 정하기
-    // 1-1. 선택하려는 재료의 나쁜 궁합을 탐색한다.
-    if(!bad[idx].isEmpty()) {
-      for (int b : bad[idx]) {
-        // 1-2. 나쁜 궁합의 재료가 선택되었는지 확인한다.
-        if (isSelected[b]) {
-          // 1-2-1. 선택되었다면, 해당 재료는 선택하지 않는다.
-          isSelected[idx] = false;
-          subset(idx + 1);
-        } else {
-          // 1-2-2. 선택되지 않았다면, 해당 재료를 선택한다.
-          isSelected[idx] = true;
-          subset(idx + 1);
-          isSelected[idx] = false;
-        }
-      }
-    } else {
-      // 1-3. 나쁜 궁합의 재료가 존재하지 않는다면
-      // 1-3-1. 선택하거나
-      // 1-3-2. 선택하지 않는다.
+      // 1-1. 나쁜 궁합의 재료가 앞서 선택되지 않았다면
+    if(valid(idx)) {
+      // 1-2. 선택한다.
       isSelected[idx] = true;
-      subset(idx + 1);
-      isSelected[idx] = false;
-      subset(idx + 1);
+      subset(idx+1);
     }
+    // 1-3. 선택하지 않는다.
+    isSelected[idx] = false;
+    subset(idx+1);
+  }
+  private static boolean valid(int idx){ // 현재 선택한 재료의 번호
+    for(int i = 1; i < N+1; i++){ // for i: 재료의 번호 1부터 N
+      // 이미 선택되었는데, 나쁜 조합이면. 선택하지 않도록 한다.
+      if(isSelected[i] && bad[i][idx]) return false;
+    }
+    return true;
   }
 }
