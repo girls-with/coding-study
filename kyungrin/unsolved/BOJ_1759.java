@@ -33,6 +33,7 @@ import java.util.StringTokenizer;
  * [순열의 근거]
  * C개의 알파벳 중 L개의 알파벳을 순서있게 고르는 작업이기 때문이다.
  *
+ *  커밋실수
  * **/
 public class BOJ_1759 {
   static int L, C; // 뽑는 수, 주어진 수
