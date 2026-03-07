@@ -1,10 +1,11 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+// 실행 시간: 404ms
 /** 최소 비용을 들이는 여행 계획
  * W[i][j]는 도시 i에서 도시 j로 가기 위한 비용
  *
@@ -31,13 +32,17 @@ import java.util.StringTokenizer;
  *
  * 상태를 다루는 visited 배열*이 필요하다.
  * dfs에서 매개변수로 현재 경로의 비용을 다룬다.
- * 기저(시작점에서 시작점으로 오다)에서 최소 비용*을 갱신한다.
+ * 기저(모든 노드에 방문 했다)에서 최소 비용*을 갱신한다.
+ *
+ * 마지막 예외에는 기저에서 처리한다.
+ * 예외를 위해 시작점의 전역 변수*를 사용한다.
  * **/
 public class BOJ_10971 {
   static int N;
   static int[][] map; // i->j 와 j->i는 다름
   //
-  static boolean[] visited; // 상태 저장
+  static int start; // 시작점의 전역 변수
+  static boolean[] visited; // 경로의 수마다 노드 방문 상태 저장
   //
   static int min;
   //
@@ -58,10 +63,10 @@ public class BOJ_10971 {
     min = Integer.MAX_VALUE;
 
     //
-//    for 시작점 전달 4번
     for(int i = 0; i < N; i++) {
       visited[i] = true;
-      dfs( i, N+1, 0);
+      start = i;
+      dfs( i, 0);
       visited[i] = false;
     }
     //
@@ -69,7 +74,9 @@ public class BOJ_10971 {
     System.out.println(min);
   }
 
-  private static void dfs(int depart, int pre, int total){
+  // 해당 dfs의 기능: 현재 depart 노드에서 도착할 노드(=다음 노드)를 선정한다. 그리고 다음 노드에서 도착할 노드를 선정하도록 재귀한다.
+  // 모든 노드를 방문했다면, 마지막 예외 처리(끝->시작점) 비용을 합하고 최소 이동 비용을 갱신한다.
+  private static void dfs(int depart, int total){ // 현재 노드의 번호, 현재까지의 이동 비용 합
 
     boolean flag = true;
     for(boolean isVisited : visited){
@@ -80,17 +87,17 @@ public class BOJ_10971 {
     }
 
     if(flag){
-      System.out.println("----------");
+      if (map[depart][start] == 0) return;
+      total += map[depart][start];
       min = Math.min(min, total);
       return;
     }
 
     // 현재 위치에서 갈 노드를 탐색한다.
-    for(int i = 0; i < 4; i++){
-      if(map[depart][i] != 0 && !visited[i] && pre != i){
-        System.out.println(depart + " -> " + i);
+    for(int i = 0; i < N; i++){
+      if(map[depart][i] != 0 && !visited[i]){
         visited[i] = true;
-        dfs(i, depart, map[depart][i]+total);
+        dfs(i, map[depart][i]+total);
         visited[i] = false;
       }
     }
