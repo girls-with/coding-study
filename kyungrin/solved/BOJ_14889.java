@@ -1,12 +1,11 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLOutput;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
+// 실행 시간 : 292ms
 /** 스타트 팀과 링크 팀의 능력치의 차이의 최솟값
  * N(4 ≤ N ≤ 20, N은 짝수)
  * N/2명으로 이루어진 (스타트 팀|링크 팀)으로 사람들을 나눠야 한다.
@@ -51,7 +50,6 @@ public class BOJ_14889 {
       for(int j = 0; j < N; j++){
         power[i][j] = Integer.parseInt(st.nextToken());
       }
-//      System.out.println(Arrays.toString(power[i]));
     }
 
     selected = new boolean[N];
@@ -62,14 +60,17 @@ public class BOJ_14889 {
     //
     System.out.println(min);
   }
+
   // cnt번 째에 스타트 팀이 될 사람을 뽑는다. 그리고 cnt+1번 째에 스타트 팀이 될 사람을 뽑는다.
   private static void combination(int cnt, int start){
+
+    // 기저 부분
     if(cnt == N/2){
 
-      for(int  i = 0; i < N; i++){
-        System.out.println(i + ": " + selected[i]);
-      }
-      System.out.println("------------------------------");
+//      for(int  i = 0; i < N; i++){
+//        System.out.println(i + ": " + selected[i]);
+//      }
+//      System.out.println("------------------------------");
 
       int startSum = 0;
       int[] steam = new int[N/2];
@@ -92,33 +93,46 @@ public class BOJ_14889 {
       // 스타트 팀의 능력치
         // 선택된 사람의 번호를 기준으로,
         // 또 다른 선택된 사람과의 능력치(2회) 다가가 더한다.
+      /** 틀린 부분 검토에 AI 사용
+       *
+       * 내가 원했던 것:
+       *  1 : 1 2 3 4 와의 시너지를 합한다.
+       *  2 : 1 2 3 4 와의 시너지를 합한다.
+       *  ...
+       *
+       *  실제로 내가 한 것(중복적으로 합했다.):
+       *    1 : 1 2** 3 4와의 시너지를 합한다.
+       *    그리고 1: 1,  2: 1, 3: 1, 4: 1 일 때도 시너지를 합한다.
+       *    2 : 1 2 3 4와의 시너지를 합한다.
+       *    그리고 1: 2**,  2: 2, 3: 2, 4: 2 일 때도 시너지를 합한다.
+       *    ...
+       *
+       *    **: 중복합 발생 했었음 !!
+       *
+       * **/
       for(int i = 0; i < N/2; i++) {
         int p1 = steam[i];
         for (int j = 0; j < N / 2; j++) {
           int p2 = steam[j];
           startSum += power[p1][p2];
-          startSum += power[p2][p1];
         }
       }
 
+      // 링크 팀의 능력치
       for(int i = 0; i < N/2; i++) {
         int p1 = rteam[i];
         for (int j = 0; j < N / 2; j++) {
           int p2 = rteam[j];
-//          System.out.println(p1 + " " + p2);
-//          System.out.println(power[p1][p2]);
-//          System.out.println(power[p2][p1]);
           rinkSum += power[p1][p2];
-          rinkSum += power[p2][p1];
         }
       }
 
-      System.out.println(min + "  " + Math.abs(startSum - rinkSum));
       min = Math.min(min, Math.abs(startSum - rinkSum));
 
       return;
     }
 
+    // 유도 부분
     for(int i = start; i < N; i++){
       if(selected[i]) continue;
       selected[i] = true;
