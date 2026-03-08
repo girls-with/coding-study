@@ -20,6 +20,7 @@ def func(level, start):
             for j in range(i+1, len(arr2)):
                 v -= arr[arr3[i]][arr3[j]] + arr[arr3[j]][arr3[i]]
         min_v = min(min_v, abs(v))
+        return
 
     for i in range(start, n):
         arr2.append(i)
