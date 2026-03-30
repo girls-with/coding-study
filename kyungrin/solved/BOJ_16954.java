@@ -1,12 +1,13 @@
-package kyungrin.unsolved;
+package kyungrin.solved;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
 
+// 100 ms
 /** 가장 오른쪽 윗 칸으로 이동할 수 있는지 없는지 : 도착할 수 있으면 1, 없으면 0을 출력
  * .
  * 8×8인 체스판에서 탈출하는 게임
@@ -49,22 +50,22 @@ public class BOJ_16954 {
 
     ///////////////////////////////////////
     Queue<int[]> q = new ArrayDeque<>(); // 좌표 값 저장
-    boolean[][] visited = new boolean[8][8];
     q.offer(new int[] {7, 0});
-    visited[7][0] = true;
 
     while(!q.isEmpty()){
+    	/**
+    	 * AI 이용
+    	 * 매 초 마다 지도가 바뀐다.
+    	 * 때문에 매 초 마다 밟을 수 있는 블록도 달라진다.
+    	 * 맵의 현재 상태에 따라 BFS를 달리 해야한다는 것이다.
+    	 * **/
+      boolean[][] visited = new boolean[8][8];
       int size = q.size();
 
       char[][] tempMap = new char[8][8];
-      ArrayList<int[]> block = new ArrayList<>();
+      for(int i = 1; i < 8; i++) Arrays.fill(tempMap[i], '.'); // 빈칸 초기화
       for(int i = 1; i < 8; i++){
         tempMap[i] = map[i-1].clone(); // 블록이 바닥에 부딪히면 삭제
-      }
-      for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j++) {
-          if(tempMap[i][j] == '#') block.add(new int[] {i, j});
-        }
       }
 
       for(int i = 0; i < size; i++) {
@@ -76,14 +77,11 @@ public class BOJ_16954 {
           int nextr = curr + mr[d];
           int nextc = curc + mc[d];
 
-          if (nextr < 0 || nextr >= 8 || nextc < 0 || nextc >= 8)
-            continue;
-          if (visited[nextr][nextc])
-            continue;
-
-          for(int[] b : block){ // 블록 위치와 사용자 위치가 겹치는지 확인
-            if(b[0] == nextr && b[1] == nextc) continue;
-          }
+          if (nextr < 0 || nextr >= 8 || nextc < 0 || nextc >= 8) continue;
+          if (visited[nextr][nextc]) continue;
+          // 이동 전(빈칸으로만 이동 가능), 이동 후(벽이 다가오는가)
+          if (map[nextr][nextc] == '#') continue;
+          if (tempMap[nextr][nextc] =='#') continue;
 
           if(nextr == 0 && nextc == 7) {
             System.out.println(1);
@@ -95,9 +93,8 @@ public class BOJ_16954 {
         }
       }
       // 맵 갱신
-      for(int i = 0; i < 8; i++){
-        map[i] = tempMap[i].clone();
-      }
+       map = tempMap;
+      
     }
     ///////////////////////////////////////
     System.out.println(0);
