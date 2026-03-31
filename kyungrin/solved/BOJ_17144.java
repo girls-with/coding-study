@@ -1,3 +1,5 @@
+package kyungrin.solved;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -5,6 +7,8 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+
+// 640ms
 /** T초가 지난 후 구사과의 방에 남아있는 미세먼지의 양
  * R×C인 격자판
  * - 공기청정기는 항상 1번 열에 설치 => 크기는 두 행
@@ -61,12 +65,17 @@ public class BOJ_17144 {
 			for(int j = 0; j < C; j++) {
 				map[i][j] = Integer.parseInt(st.nextToken());
 				if(map[i][j] == -1) airconditional[idx++] = new int[] {i, j};
-				if(map[i][j] > 0) dusts.offer(new int[] {i, j});
 			}
 		}
 		total = 0;
 		//
 		while(T > 0) {
+			dusts = new ArrayDeque<>(); // AI 사용 (잘못짬)
+			for(int i = 0; i < R; i++) {
+				for(int j = 0; j < C; j++) {
+					if(map[i][j] > 0) dusts.offer(new int[] {i, j});
+				}
+			}
 			
 			int[][] temp1 = new int[R][C];
 			// 1. 미세먼지 확산
@@ -80,34 +89,61 @@ public class BOJ_17144 {
 				int v = 0;
 				for(int d = 0; d < 4; d++) {
 					int nextr = r + mr[d];
-					int nextc = c + mr[d];
+					int nextc = c + mc[d]; // AI 사용 (잘못짬)
 					
-					if(nextr >= 0 || nextr < R || nextc >= 0 || nextc < C) continue;
+					if(nextr < 0 || nextr >= R || nextc < 0 || nextc >= C) continue; // AI 사용 (잘못짬)
+					if(map[nextr][nextc] == -1) continue; // AI 사용 (잘못짬)
 					
 					temp1[nextr][nextc] += dustv/5; // 몫
-					v += dustv/5;
+					v++;
 				}
-				temp1[r][c] = dustv/5;
+				temp1[r][c] += dustv - (dustv/5 * v); // AI 사용 (잘못짬) 난리가 났네
 			}
 			
 			// 2. 작동
-			int[][] temp2 = new int[R][C];
-//			 * 	(공청기 1 좌표)의 1. (row, 1~C-1) => 오른쪽으로 밀기 & 끝은 위로 올리기 | 2. (row ~(--)~ 0, C-1) => 위로 밀기 끝은 왼쪽으로 | 3. (row:0, C-1 ~ 0) 왼쪽으로 밀기 & 끝은 아래 | 4. (0~공청기row-1, col:0) 
-//			 * 	(공청기 2 좌표)의 1. (row, 1~C-1) => 오른쪽으로 밀기 & 끝은 아래로 내리기 | ... 유사 ...
 			// 공청1
-			int[] a1 = airconditional[0];
-			for(int j = 1; j < C-1; j++) {
-				temp2[a1[0]][j] = temp1[a1[0]][j-1]; 
-			}
-			temp2[a1[0]-1][C-1] = temp1[a1[0]][C-1];
-			///// 우선 여기까지 40분 /////
+			int top =  airconditional[0][0]; // 1번 공청기 row
+			// 가장 왼쪽 ↓
+			for(int i = top-1; i > 0; i--) temp1[i][0] = temp1[i-1][0];
+			// 가장 위 ←
+			for(int j = 0; j < C-1; j++) temp1[0][j] = temp1[0][j+1];
+			// 가장 오른쪽 ↑
+			for(int i = 0; i < top; i++) temp1[i][C-1] = temp1[i+1][C-1]; 
+			// 중앙 →
+			for(int j = C-1; j > 1; j--) temp1[top][j] = temp1[top][j-1];
+			
+			temp1[top][1] = 0; 
+
 			
 			// 공청2
-			int[] a2 = airconditional[1];
+			int bottom =  airconditional[1][0]; 
+			// 가장 왼쪽 ↑ 하... 재미없다
+			for(int i = bottom+1; i < R-1; i++) temp1[i][0] = temp1[i+1][0];
+			// 가장 아래 ←
+			for(int j = 0; j < C-1 ; j++) temp1[R-1][j] = temp1[R-1][j+1];
+			// 가장 오른쪽 ↓
+			for(int i = R-1; i > bottom ; i--) temp1[i][C-1] = temp1[i-1][C-1];
+			// 중앙 →
+			for(int j = C-1; j > 1; j--) temp1[bottom][j] = temp1[bottom][j-1]; 
+			
+			temp1[bottom][1] = 0;
+			
+			temp1[bottom][0] = -1;
+			temp1[top][0] = -1;
+
 			
 			
+			map = temp1;
 			T--;
 		}
+		//
+		for(int i = 0; i < R; i++) {
+			for(int j = 0; j < C; j++) {
+				if(map[i][j] == -1) continue;
+				total += map[i][j];
+			}
+		}
+		System.out.println(total);
 	}
 
 }
