@@ -1,17 +1,18 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 int M, N, K;
 int grid[100][100];
 bool visited[100][100];
-vector<int> res;
+vector<int> res;  // 각 영역의 넓이를 저장할 벡터(리스트)
 
 int dr[] = { -1, 1, 0, 0 };
 int dc[] = { 0, 0, -1, 1 };
 
-void fill(int sc, int sr, int ec, int er) {
+void fill(int sc, int sr, int ec, int er) {  // 직사각형을 그리는 함수
 	for (int r = sr; r < er; r++) {
 		for (int c = sc; c < ec; c++) {
 			visited[r][c] = true;
@@ -23,7 +24,7 @@ void bfs(int r, int c) {
 	queue<pair<int, int>> q;  // AI 활용: 좌표 저장하기 위한 queue 선언 방법
 	q.push({ r, c });
 	visited[r][c] = true;
-	int cnt = 1;
+	int cnt = 1;  // 해당 영역의 넓이 변수
 
 	while (!q.empty()) {
 		int curR = q.front().first;  // AI 활용: queue에서 pair<int, int> 꺼내는 방법
@@ -34,8 +35,8 @@ void bfs(int r, int c) {
 			int nr = curR + dr[dir];
 			int nc = curC + dc[dir];
 
-			if (nr < 0 || nr >= N || nc < 0 || nc >= M) continue;
-			if (visited[nr][nc]) continue;
+			if (nr < 0 || nr >= M || nc < 0 || nc >= N) continue;  // 모눈종이 범위를 벗어나면 continue
+			if (visited[nr][nc]) continue;  // 채워진 영역이면 continue 
 
 			q.push({ nr, nc });
 			visited[nr][nc] = true;
@@ -59,15 +60,17 @@ int main() {
 		fill(sc, sr, ec, er);
 	}
 
-	int cnt = 0;
-	for (int r = 0; r < N; r++) {
-		for (int c = 0; c < M; c++) {
-			if (visited[r][c]) continue;
+	int cnt = 0;  // 분리되어 나누어지는 영역의 개수
+	for (int r = 0; r < M; r++) {
+		for (int c = 0; c < N; c++) {
+			if (visited[r][c]) continue;  // 채워진 영역이면 continue
 
 			bfs(r, c);
 			cnt++;
 		}
 	}
+
+	sort(res.begin(), res.end());  // 각 영역의 넓이를 오름차순 정렬
 
 	cout << cnt << '\n';
 	for (int i = 0; i < res.size(); i++) {
