@@ -52,7 +52,7 @@ for tc in range(1, T+1):
  
         for i in range(k):
             if t[i] == time: #만약 i번째 고객이 도착할 시간이 되었다면
-                reception_q.append(i+1) #고객번호를 창구 대기 큐에 append
+                reception_q.append(i+1) #고객번호를 창구 대기 큐에 append 
  
         for i in range(n):
             if reception_desk[i] is None and reception_q: #만약 i번째 창구가 비어있고 고객이 도착하여 창구에 들어갈 수 있는 고객이 있다면
