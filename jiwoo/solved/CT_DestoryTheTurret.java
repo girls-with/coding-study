@@ -91,7 +91,7 @@ public class Main_C_포탑부수기 {
 			turret.get(0).power += N + M;
 			turret.get(0).time = i;
 			
-			if(raser(turret.get(0))) {  // 레이저 공격 (BFS)
+			if(laser(turret.get(0))) {  // 레이저 공격 (BFS)
 				attack();
 				maintain();
 			} else {  // 포탄 공격 (8방 탐색)
@@ -131,7 +131,7 @@ public class Main_C_포탑부수기 {
 		System.out.println(turret.get(totalTurret-1).power);
 	}
 	
-	private static boolean raser(Node start) {  // 레이저 공격 가능 여부 판단
+	private static boolean laser(Node start) {  // 레이저 공격 가능 여부 판단
 		Queue<Node> queue = new ArrayDeque<>();
 		queue.add(start);
 		
